@@ -8,12 +8,15 @@ from ..helpers import GRAVATAR_DEFAULT_SIZE, get_gravatar_profile_url, get_grava
 register = template.Library()
 
 
+def __get_email_from_user_or_email(user_or_email):
+    if hasattr(user_or_email, 'email'):
+        return user_or_email.email
+
+    return user_or_email
+
 def gravatar_url(user_or_email, size=GRAVATAR_DEFAULT_SIZE):
     """ Builds a gravatar url from an user or email """
-    if hasattr(user_or_email, 'email'):
-        email = user_or_email.email
-    else:
-        email = user_or_email
+    email = __get_email_from_user_or_email(user_or_email)
 
     try:
         return escape(get_gravatar_url(email=email, size=size))
@@ -23,10 +26,7 @@ def gravatar_url(user_or_email, size=GRAVATAR_DEFAULT_SIZE):
 
 def gravatar(user_or_email, size=GRAVATAR_DEFAULT_SIZE, alt_text='', css_class='gravatar'):
     """ Builds an gravatar <img> tag from an user or email """
-    if hasattr(user_or_email, 'email'):
-        email = user_or_email.email
-    else:
-        email = user_or_email
+    email = __get_email_from_user_or_email(user_or_email)
 
     try:
         url = escape(get_gravatar_url(email=email, size=size))
@@ -42,10 +42,7 @@ def gravatar(user_or_email, size=GRAVATAR_DEFAULT_SIZE, alt_text='', css_class='
 
 
 def gravatar_profile_url(user_or_email):
-    if hasattr(user_or_email, 'email'):
-        email = user_or_email.email
-    else:
-        email = user_or_email
+    email = __get_email_from_user_or_email(user_or_email)
 
     try:
         return get_gravatar_profile_url(email)
